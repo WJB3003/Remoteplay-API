@@ -1,12 +1,9 @@
 package co.willbrown.remoteplay.model;
 
-import com.sun.istack.internal.NotNull;
 
 public class Card {
 
-    @NotNull
     private String content;
-    @NotNull
     private CardType cardType;
 
     public Card(String content, CardType cardType) {
