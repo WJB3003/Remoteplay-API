@@ -18,7 +18,7 @@ public class GameController {
     private HashMap<String, Room> rooms = new HashMap<>();
 
     public void handleGame() throws URISyntaxException {
-        Socket socket = IO.socket("http://localhost:35729");
+        Socket socket = IO.socket("https://remote-play.herokuapp.com/");
         socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
             @Override
