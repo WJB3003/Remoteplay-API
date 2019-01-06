@@ -3,7 +3,7 @@ package co.willbrown.remoteplay.model;
 public class Player {
 
     private String name;
-    private Hand hand;
+    private Hand hand = new Hand();
     private Card submitCard;
 
     public Player(String name, Hand hand, Card submitCard) {

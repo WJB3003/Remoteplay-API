@@ -15,6 +15,22 @@ public class Room {
         this.code = generateCode();
     }
 
+    public List<Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void setPlayerList(List<Player> playerList) {
+        this.playerList = playerList;
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     public String getCode() {
         return code;
     }
@@ -48,6 +64,14 @@ public class Room {
 
     public void startGame(){
         this.game = new Game(playerList);
+        this.playerList = this.game.getPlayers();
         gameStarted = true;
+    }
+
+    public Player getPlayer(String name){
+        for (Player player : playerList) {
+            if(player.getName().equals(name)) return player;
+        }
+        return new Player("Player Not Found");
     }
 }

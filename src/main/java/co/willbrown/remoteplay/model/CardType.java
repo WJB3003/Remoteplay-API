@@ -1,6 +1,6 @@
 package co.willbrown.remoteplay.model;
 
-enum CardType {
+public enum CardType {
     QUESTION,
     ANSWER
 }

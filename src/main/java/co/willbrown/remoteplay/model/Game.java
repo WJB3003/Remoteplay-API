@@ -1,7 +1,9 @@
 package co.willbrown.remoteplay.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 public class Game {
 
@@ -10,21 +12,11 @@ public class Game {
     private List<Player> players;
     private HashMap<Player, Integer> score;
     private int numberOfPlayers;
-    private Deck questions;
-    private Deck answers;
+    private Deck questions = new Deck();
+    private Deck answers = new Deck();
 
     public Game() {
-
-    }
-
-    public Game(int numberOfRounds, Player judge, List<Player> players, HashMap<Player, Integer> score, int numberOfPlayers, Deck questions, Deck answers) {
-        this.numberOfRounds = numberOfRounds;
-        this.judge = judge;
-        this.players = players;
-        this.score = score;
-        this.numberOfPlayers = numberOfPlayers;
-        this.questions = questions;
-        this.answers = answers;
+        createQuestionDeck();
     }
 
     public Game(List<Player> players) {
@@ -33,6 +25,7 @@ public class Game {
         this.players = players;
         players.addAll(players);
         this.numberOfPlayers = players.size();
+        createQuestionDeck();
     }
 
     public int getNumberOfRounds() {
@@ -91,17 +84,28 @@ public class Game {
         this.answers = answers;
     }
 
-    public void startGame(){
-
+    public void createQuestionDeck(){
+        questions.addCards(
+                new Card("Question 1", CardType.QUESTION),
+                new Card("Question 2", CardType.QUESTION),
+                new Card("Question 3", CardType.QUESTION),
+                new Card("Question 4", CardType.QUESTION),
+                new Card("Question 5", CardType.QUESTION),
+                new Card("Question 6", CardType.QUESTION),
+                new Card("Question 7", CardType.QUESTION)
+        );
     }
 
-    public void startRound(){
-        for(int i = 0; i < numberOfPlayers; i++){
-            startTurn();
+    public void dealFirstHand(){
+        for(Player player: players){
+            for(int i = 0; i <= 7; i++){
+                Card topCard = new Card("ANSWER", CardType.ANSWER);
+                player.getHand().addCard(topCard);
+            }
         }
     }
 
-    public void startTurn(){
-
+    public Card drawQuestion(){
+        return questions.getCardStack().pop();
     }
 }

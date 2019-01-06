@@ -1,6 +1,5 @@
 package co.willbrown.remoteplay.model;
 
-
 public class Card {
 
     private String content;
