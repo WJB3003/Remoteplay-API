@@ -11,8 +11,6 @@ public class RemoteplayApplication {
 
 	public static void main(String[] args) throws URISyntaxException {
 		SpringApplication.run(RemoteplayApplication.class, args);
-		GameController controller = new GameController();
-		controller.handleGame();
 	}
 
 }

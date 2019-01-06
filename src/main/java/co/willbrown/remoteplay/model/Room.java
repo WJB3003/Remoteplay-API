@@ -1,13 +1,15 @@
 package co.willbrown.remoteplay.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Room {
 
-    private List<Player> playerList;
+    private List<Player> playerList = new ArrayList<>();
     private String code;
     private Game game;
+    private boolean gameStarted = false;
 
     public Room() {
         this.code = generateCode();
@@ -19,6 +21,14 @@ public class Room {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public boolean getGameStarted(){
+        return this.gameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted){
+        this.gameStarted = gameStarted;
     }
 
     public String generateCode(){
@@ -38,5 +48,6 @@ public class Room {
 
     public void startGame(){
         this.game = new Game(playerList);
+        gameStarted = true;
     }
 }
