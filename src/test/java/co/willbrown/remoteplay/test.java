@@ -3,33 +3,75 @@ package co.willbrown.remoteplay;
 import co.willbrown.remoteplay.model.*;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class test {
 
     @Test
     public void testHand(){
 
-//        Deck questions = new Deck();
-//
-//        questions.addCards(
-//                new Card("Question 1", CardType.QUESTION),
-//                new Card("Question 2", CardType.QUESTION),
-//                new Card("Question 3", CardType.QUESTION),
-//                new Card("Question 4", CardType.QUESTION),
-//                new Card("Question 5", CardType.QUESTION),
-//                new Card("Question 6", CardType.QUESTION)
-//        );
-//
-//        questions.suffle();
-//
-//        for(int i = 0; i < 6; i++) {
-//            System.out.println(questions.getCardStack().pop().getContent());
-//        }
+        Player will = new Player("will");
+        Player mike = new Player("mike");
+        Player eva = new Player("eva");
+        Player warren = new Player("warren");
 
-        Game game = new Game();
+        List<Player> players = new ArrayList<>();
 
-        for(int i = 0; i < 6; i++) {
-            System.out.println(game.getQuestions().getCardStack().pop().getContent());
-        }
+        players.add(will);
+        players.add(mike);
+        players.add(eva);
+        players.add(warren);
+
+        Game game = new Game(players);
+
+        Card firstCard = game.drawAnswer();
+
+        System.out.println(firstCard.getContent());
+
+        will.getHand().addCard(firstCard);
+
+        System.out.println(will.getHand().getMyhand().size());
+    }
+
+    @Test
+    public void checkPlayerList(){
+
+        Player will = new Player("will");
+        Player mike = new Player("mike");
+        Player eva = new Player("eva");
+        Player warren = new Player("warren");
+
+        List<Player> players = new ArrayList<>();
+
+        players.add(will);
+        players.add(mike);
+        players.add(eva);
+        players.add(warren);
+
+        Game game = new Game(players);
+
+
+        System.out.println(game.getPlayers().size());
+    }
+
+    @Test
+    public void testSubmit(){
+
+        Room room = new Room();
+        Player player = new Player("will");
+
+        room.addPlayer(player);
+        room.startGame();
+        room.getGame().dealFirstHand();
+
+        Card card = player.getHand().getMyhand().get(0);
+
+        player.setSubmitCard(card);
+
+        System.out.println(player.getHand().getMyhand().contains(card));
+        System.out.println(player.getHand().getMyhand().remove(card));
+        System.out.println(player.getHand().getMyhand().add(room.getGame().drawAnswer()));
     }
 
 }

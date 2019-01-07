@@ -11,6 +11,12 @@ public class Deck {
 
     }
 
+    public Deck(Card ... cards){
+        for(Card card : cards){
+            cardStack.push(card);
+        }
+    }
+
     public Deck(Stack<Card> cardStack) {
         this.cardStack = cardStack;
     }

@@ -59,12 +59,11 @@ public class Room {
     }
 
     public void addPlayer(Player player){
-        playerList.add(player);
+        if(!playerList.contains(player)) playerList.add(player);
     }
 
     public void startGame(){
         this.game = new Game(playerList);
-        this.playerList = this.game.getPlayers();
         gameStarted = true;
     }
 
@@ -73,5 +72,13 @@ public class Room {
             if(player.getName().equals(name)) return player;
         }
         return new Player("Player Not Found");
+    }
+
+    public Player findByName(String name){
+        for(Player player : playerList){
+            if(player.getName().equals(name)) return player;
+        }
+
+        return new Player(name);
     }
 }

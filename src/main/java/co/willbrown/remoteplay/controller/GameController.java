@@ -3,10 +3,7 @@ package co.willbrown.remoteplay.controller;
 import co.willbrown.remoteplay.model.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -48,12 +45,12 @@ public class GameController {
         return new ResponseEntity<>(room.getPlayerList(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/deal-one-card/{roomCode}/{player}")
+    @RequestMapping(value = "/deal-one-card/{roomCode}/{player}", method = RequestMethod.POST)
     public ResponseEntity<?> dealOneCard(@PathVariable String roomCode, @PathVariable String player){
         Room room = rooms.get(roomCode);
         Player user = room.getPlayer(player);
 
-        user.getHand().addCard(new Card("This is an answer", CardType.ANSWER));
+        user.getHand().addCard(room.getGame().drawAnswer());
 
         return new ResponseEntity<>("Card dealt", HttpStatus.OK);
     }
@@ -65,7 +62,7 @@ public class GameController {
 
         room.getGame().dealFirstHand();
 
-        if(!room.equals(null)) return new ResponseEntity<>("Game started", HttpStatus.OK);
+        if(!room.getGame().equals(null)) return new ResponseEntity<>("Game started", HttpStatus.OK);
 
         return new ResponseEntity<>("Game had error", HttpStatus.BAD_REQUEST);
     }
@@ -89,20 +86,18 @@ public class GameController {
         return new ResponseEntity<>(question, HttpStatus.OK);
     }
 
-//    @RequestMapping(value = "/{roomCode}/start-round", method = RequestMethod.GET)
-//    public ResponseEntity<?> startRound(@PathVariable String roomCode){
-//        return null;
-//    }
-//
-//    @RequestMapping(value = "/{roomCode}/start-turn", method = RequestMethod.GET)
-//    public ResponseEntity<?> startTurn(@PathVariable String roomCode){
-//        return null;
-//    }
-//
-//    @RequestMapping(value = "/{roomCode}/winner/{winnerName}", method = RequestMethod.GET)
-//    public ResponseEntity<?> chooseWinner(@PathVariable String roomCode, @PathVariable String user){
-//        Room room = rooms.get(roomCode);
-//
-//        return new ResponseEntity<>(room, HttpStatus.OK);
-//    }
+    @PostMapping("/{roomCode}/{name}/submit-card")
+    public ResponseEntity<?> submitCard(@PathVariable String roomCode, @RequestBody Card card, @PathVariable String name){
+        Room room = rooms.get(roomCode);
+        Player player = room.findByName(name);
+
+        for(int i = 0; i < player.getHand().getMyhand().size(); i++){
+            if(card.getContent().equals(player.getHand().getMyhand().get(i).getContent())){
+                card = player.getHand().getMyhand().get(i);
+            }
+        }
+        
+        player.setSubmitCard(card);
+        return new ResponseEntity<>("Card Submitted", HttpStatus.OK);
+    }
 }

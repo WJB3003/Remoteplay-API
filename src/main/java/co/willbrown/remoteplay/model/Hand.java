@@ -5,24 +5,24 @@ import java.util.List;
 
 public class Hand {
 
-    private int numberOfCards = 7;
+    private int maxNumberOfCards = 7;
     private List<Card> myhand = new ArrayList<>();
 
     public Hand() {
 
     }
 
-    public Hand(int numberOfCards, ArrayList<Card> myhand) {
-        this.numberOfCards = numberOfCards;
+    public Hand(int maxNumberOfCards, ArrayList<Card> myhand) {
+        this.maxNumberOfCards = maxNumberOfCards;
         this.myhand = myhand;
     }
 
-    public int getNumberOfCards() {
-        return numberOfCards;
+    public int getMaxNumberOfCards() {
+        return maxNumberOfCards;
     }
 
-    public void setNumberOfCards(int numberOfCards) {
-        this.numberOfCards = numberOfCards;
+    public void setMaxNumberOfCards(int maxNumberOfCards) {
+        this.maxNumberOfCards = maxNumberOfCards;
     }
 
     public List<Card> getMyhand() {
