@@ -8,8 +8,8 @@ import java.net.URISyntaxException;
 
 @SpringBootApplication
 public class RemoteplayApplication {
-
-	public static void main(String[] args) throws URISyntaxException {
+	
+	public static void main(String[] args) {
 		SpringApplication.run(RemoteplayApplication.class, args);
 	}
 

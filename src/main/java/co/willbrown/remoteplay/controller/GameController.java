@@ -12,24 +12,25 @@ public class GameController {
 
     private HashMap<String, Room> rooms = new HashMap<>();
 
-    @RequestMapping(value = "/create-room", method = RequestMethod.GET)
+    @GetMapping("/create-room")
     public ResponseEntity<?> createRoom(){
         Room room = new Room();
-        Game game = new Game();
+
         rooms.put(room.getCode(), room);
 
         return new ResponseEntity<>(room, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/rooms", method = RequestMethod.GET)
+    @GetMapping("/rooms")
     public ResponseEntity<?> getAllRooms(){
         return new ResponseEntity<>(rooms.keySet(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/add-player/{roomCode}/{playerName}", method = RequestMethod.POST)
+    @PostMapping("/{roomCode}/players/{playerName}")
     public ResponseEntity<?> addPlayer(@PathVariable String playerName, @PathVariable String roomCode){
         Player user = new Player(playerName);
         Room room = rooms.get(roomCode);
+
         if(!user.equals(null) && !room.equals(null)) {
             room.addPlayer(user);
             return new ResponseEntity<>("Player added", HttpStatus.OK);
@@ -38,14 +39,14 @@ public class GameController {
         }
     }
 
-    @RequestMapping(value = "/{roomCode}/players", method = RequestMethod.GET)
+    @GetMapping("/{roomCode}/players")
     public ResponseEntity<?> getAllPlayers(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
 
         return new ResponseEntity<>(room.getPlayerList(), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/deal-one-card/{roomCode}/{player}", method = RequestMethod.POST)
+    @PostMapping("/deal-one-card/{roomCode}/{player}")
     public ResponseEntity<?> dealOneCard(@PathVariable String roomCode, @PathVariable String player){
         Room room = rooms.get(roomCode);
         Player user = room.getPlayer(player);
@@ -55,7 +56,7 @@ public class GameController {
         return new ResponseEntity<>("Card dealt", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{roomCode}/start-game", method = RequestMethod.GET)
+    @GetMapping("/{roomCode}/start-game")
     public ResponseEntity<?> startGame(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
         room.startGame();
@@ -67,7 +68,7 @@ public class GameController {
         return new ResponseEntity<>("Game had error", HttpStatus.BAD_REQUEST);
     }
 
-    @RequestMapping(value = "/{roomCode}/has-game-started", method = RequestMethod.GET)
+    @GetMapping("/{roomCode}/has-game-started")
     public ResponseEntity<?> hasGameStarted(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
 
@@ -76,7 +77,7 @@ public class GameController {
         return new ResponseEntity<>("Game Not Started", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{roomCode}/get-question", method = RequestMethod.GET)
+    @GetMapping("/{roomCode}/get-question")
     public ResponseEntity<?> getQuestion(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
         Card question = room.getGame().drawQuestion();
@@ -99,5 +100,14 @@ public class GameController {
         
         player.setSubmitCard(card);
         return new ResponseEntity<>("Card Submitted", HttpStatus.OK);
+    }
+
+    @GetMapping("/{roomCode}/{name}")
+    public ResponseEntity<?> getPlayerCards(@PathVariable String roomCode, @PathVariable String name){
+
+        Room room = rooms.get(roomCode);
+        Player player = room.findByName(name);
+
+        return new ResponseEntity<>(player.getHand().getMyhand(), HttpStatus.OK);
     }
 }
