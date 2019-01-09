@@ -1,9 +1,7 @@
 package co.willbrown.remoteplay.model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Stack;
 
 public class Game {
 
@@ -12,8 +10,8 @@ public class Game {
     private List<Player> players;
     private HashMap<Player, Integer> score;
     private int numberOfPlayers;
+    private Deck displayedCards = new Deck();
     private Deck questions = new Deck();
-
     private Deck answers = new Deck(
             new Card("1", CardType.ANSWER),
             new Card("2", CardType.ANSWER),
@@ -65,8 +63,8 @@ public class Game {
 
     public Game(List<Player> players) {
         //default of 3
-        this.judge = players.get(0);
         this.players = players;
+        this.judge = players.get(0);
         this.numberOfPlayers = players.size();
         createQuestionDeck();
         questions.suffle();
@@ -127,6 +125,14 @@ public class Game {
 
     public void setAnswers(Deck answers) {
         this.answers = answers;
+    }
+
+    public Deck getDisplayedCards() {
+        return displayedCards;
+    }
+
+    public void setDisplayedCards(Deck displayedCards) {
+        this.displayedCards = displayedCards;
     }
 
     public void createQuestionDeck(){
@@ -195,10 +201,30 @@ public class Game {
     }
 
     public Card drawQuestion(){
-        return questions.getCardStack().pop();
+        Card topQuestion = questions.getCardStack().pop();
+
+        displayedCards.addCards(topQuestion);
+
+        return topQuestion;
     }
 
     public Card drawAnswer() {
         return answers.getCardStack().pop();
+    }
+
+    public void nextJudge() {
+        if(getPlayerNumber(this.judge) != ((players.size() - 1))){
+            int currentJudge = getPlayerNumber(this.judge);
+            this.judge = players.get(currentJudge + 1);
+        }else {
+            this.judge = players.get(0);
+        }
+    }
+
+    public int getPlayerNumber(Player player){
+        for(int i = 0; i < players.size(); i++){
+            if(player.equals(players.get(i))) return i;
+        }
+        return -1;
     }
 }

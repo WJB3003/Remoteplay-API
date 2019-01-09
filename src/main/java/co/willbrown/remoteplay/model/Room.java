@@ -81,4 +81,9 @@ public class Room {
 
         return new Player(name);
     }
+
+    public Boolean isJudge(Player player) {
+        if(game.getJudge().equals(player))return true;
+        return false;
+    }
 }
