@@ -15,7 +15,6 @@ public class GameController {
     @GetMapping("/create-room")
     public ResponseEntity<?> createRoom(){
         Room room = new Room();
-
         rooms.put(room.getCode(), room);
 
         return new ResponseEntity<>(room, HttpStatus.OK);
@@ -129,7 +128,7 @@ public class GameController {
         for(Player player : room.getPlayerList()){
             player.setSubmitCard(null);
         }
-        
+
         room.getGame().setDisplayedCards(null);
 
         room.getGame().nextJudge();
