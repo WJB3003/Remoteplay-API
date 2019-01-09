@@ -8,9 +8,9 @@ public class Game {
     private int numberOfRounds = 3;
     private Player judge;
     private List<Player> players;
-    private HashMap<Player, Integer> score;
+    private HashMap<Player, Integer> score = new HashMap<>();
     private int numberOfPlayers;
-    private Deck displayedCards = new Deck();
+    private HashMap<Card, Player> displayedCards = new HashMap<>();
     private Deck questions = new Deck();
     private Deck answers = new Deck(
             new Card("1", CardType.ANSWER),
@@ -64,11 +64,18 @@ public class Game {
     public Game(List<Player> players) {
         //default of 3
         this.players = players;
+        addPlayersToScore(players);
         this.judge = players.get(0);
         this.numberOfPlayers = players.size();
         createQuestionDeck();
         questions.suffle();
         answers.suffle();
+    }
+
+    private void addPlayersToScore(List<Player> players) {
+        for(Player player : players){
+            this.getScore().put(player, 0);
+        }
     }
 
     public int getNumberOfRounds() {
@@ -127,11 +134,11 @@ public class Game {
         this.answers = answers;
     }
 
-    public Deck getDisplayedCards() {
+    public HashMap<Card, Player> getDisplayedCards() {
         return displayedCards;
     }
 
-    public void setDisplayedCards(Deck displayedCards) {
+    public void setDisplayedCards(HashMap<Card, Player> displayedCards) {
         this.displayedCards = displayedCards;
     }
 
@@ -192,6 +199,8 @@ public class Game {
         );
     }
 
+
+
     public void dealFirstHand(){
         for(Player player: players){
             for(int i = 0; i <= 7; i++){
@@ -203,7 +212,7 @@ public class Game {
     public Card drawQuestion(){
         Card topQuestion = questions.getCardStack().pop();
 
-        displayedCards.addCards(topQuestion);
+        displayedCards.put(topQuestion, null);
 
         return topQuestion;
     }

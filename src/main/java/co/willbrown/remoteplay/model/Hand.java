@@ -36,4 +36,10 @@ public class Hand {
     public void addCard(Card card){
         if(myhand.size() < 7) myhand.add(card);
     }
+
+    public void removeCard(Card card){
+        for(Card i : myhand){
+            if(i.equals(card))myhand.remove(i);
+        }
+    }
 }

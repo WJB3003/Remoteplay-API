@@ -98,4 +98,29 @@ public class test {
 
     }
 
+    @Test
+    public void testChoosing(){
+        Room room = new Room();
+
+        Player will = new Player("will");
+        Player mike = new Player("mike");
+        Player eva = new Player("eva");
+        Player warren = new Player("warren");
+
+        room.addPlayer(will);
+        room.addPlayer(mike);
+        room.addPlayer(eva);
+        room.addPlayer(warren);
+
+        room.startGame();
+
+        System.out.println(room.getGame().getScore().get(will));
+
+        int newScore = room.getGame().getScore().get(will) + 1;
+
+        room.getGame().getScore().put(will, newScore);
+
+        System.out.println(room.getGame().getScore().get(will));
+    }
+
 }
