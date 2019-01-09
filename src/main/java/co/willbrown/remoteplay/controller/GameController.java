@@ -27,14 +27,17 @@ public class GameController {
 
     @PostMapping("/{roomCode}/players/{playerName}")
     public ResponseEntity<?> addPlayer(@PathVariable String playerName, @PathVariable String roomCode){
-        Player user = new Player(playerName);
         Room room = rooms.get(roomCode);
+
+        if(room.getPlayerList().contains(room.findByName(playerName))) return new ResponseEntity<>("PlayerName Taken", HttpStatus.BAD_REQUEST);
+
+        Player user = new Player(playerName);
 
         if(!user.equals(null) && !room.equals(null)) {
             room.addPlayer(user);
             return new ResponseEntity<>("Player added", HttpStatus.OK);
         }else{
-            return new ResponseEntity<>("Player or Room is not here", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Room is not here", HttpStatus.BAD_REQUEST);
         }
     }
 
