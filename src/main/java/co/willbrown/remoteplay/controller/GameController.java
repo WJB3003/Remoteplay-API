@@ -86,7 +86,11 @@ public class GameController {
 
         if(room.getGame().equals(null)) return new ResponseEntity<>("Game hasn't started yet", HttpStatus.FORBIDDEN);
 
-        return new ResponseEntity<>(question, HttpStatus.OK);
+        if(room.getGame().getDisplayedCards().size() < room.getPlayerList().size()) {
+            room.getGame().getDisplayedCards().put(question, null);
+            return new ResponseEntity<>(question, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/{roomCode}/{name}/submit-card")
@@ -101,7 +105,6 @@ public class GameController {
                 }
             }
 
-            player.getHand().removeCard(card);
             room.getGame().getDisplayedCards().put(card, player);
             player.setSubmitCard(card);
             return new ResponseEntity<>("Card Submitted", HttpStatus.OK);
@@ -143,17 +146,17 @@ public class GameController {
     @GetMapping("/{roomCode}/cards")
     public ResponseEntity<?> getSubmitedCards(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
-        if(room.getGame().getDisplayedCards().size() == room.getPlayerList().size()) return new ResponseEntity<>(room.getGame().getDisplayedCards(), HttpStatus.OK);
+        if(room.getGame().getDisplayedCards().size() == room.getPlayerList().size()) return new ResponseEntity<>(room.getGame().getDisplayedCards().keySet(), HttpStatus.OK);
         else if(room.getGame().getDisplayedCards().size() < room.getPlayerList().size()) return new ResponseEntity<>("Not all cards are in", HttpStatus.FORBIDDEN);
         return new ResponseEntity<>("Too many cards", HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/{roomCode}/judge-pick")
-    public ResponseEntity<?> judgesPick(@PathVariable String roomCode, @RequestBody Card card, @RequestBody Player player){
+    public ResponseEntity<?> judgesPick(@PathVariable String roomCode, @RequestBody Card card){
         Room room = rooms.get(roomCode);
 
-        int org = room.getGame().getScore().get(player);
-        room.getGame().getScore().put(player, org + 1);
+//        int org = room.getGame().getScore().get(player);
+//        room.getGame().getScore().put(player, org + 1);
 
         return new ResponseEntity<>(card, HttpStatus.OK);
     }
