@@ -221,6 +221,10 @@ public class Game {
         return answers.getCardStack().pop();
     }
 
+    public boolean isJudge(Player player){
+        return this.judge.equals(player);
+    }
+
     public void nextJudge() {
         if(getPlayerNumber(this.judge) != ((players.size() - 1))){
             int currentJudge = getPlayerNumber(this.judge);

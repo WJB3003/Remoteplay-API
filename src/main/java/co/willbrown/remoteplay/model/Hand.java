@@ -6,6 +6,7 @@ import java.util.List;
 public class Hand {
 
     private int maxNumberOfCards = 7;
+    private boolean isJudge;
     private List<Card> myhand = new ArrayList<>();
 
     public Hand() {
@@ -31,6 +32,14 @@ public class Hand {
 
     public void setMyhand(List<Card> myhand) {
         this.myhand = myhand;
+    }
+
+    public boolean isJudge() {
+        return isJudge;
+    }
+
+    public void setJudge(boolean judge) {
+        isJudge = judge;
     }
 
     public void addCard(Card card){

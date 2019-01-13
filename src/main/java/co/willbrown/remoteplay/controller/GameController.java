@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
+@CrossOrigin(origins = "http://localhost:8081")
 @RestController
 public class GameController {
 
@@ -114,11 +115,11 @@ public class GameController {
 
     @GetMapping("/{roomCode}/{name}")
     public ResponseEntity<?> getPlayerCards(@PathVariable String roomCode, @PathVariable String name){
-
         Room room = rooms.get(roomCode);
         Player player = room.findByName(name);
+        Hand hand = player.getHand();
 
-        return new ResponseEntity<>(player.getHand().getMyhand(), HttpStatus.OK);
+        return new ResponseEntity<>(player.getHand(), HttpStatus.OK);
     }
 
     @GetMapping("/{roomCode}/judge")
