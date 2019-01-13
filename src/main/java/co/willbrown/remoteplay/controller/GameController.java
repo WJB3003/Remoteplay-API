@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
@@ -45,8 +47,15 @@ public class GameController {
     @GetMapping("/{roomCode}/players")
     public ResponseEntity<?> getAllPlayers(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
+        List playerList = room.getPlayerList();
+        List players = new ArrayList<String>();
 
-        return new ResponseEntity<>(room.getPlayerList(), HttpStatus.OK);
+        for(int i = 0; i < playerList.size(); i++){
+            Player player = (Player) playerList.get(i);
+            players.add(player.getName());
+        }
+
+        return new ResponseEntity<>(players, HttpStatus.OK);
     }
 
     @PostMapping("/deal-one-card/{roomCode}/{player}")
@@ -75,9 +84,9 @@ public class GameController {
     public ResponseEntity<?> hasGameStarted(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
 
-        if(room.getGameStarted()) return new ResponseEntity<>("Game Already Started", HttpStatus.OK);
+        if(room.getGameStarted()) return new ResponseEntity<>(true, HttpStatus.OK);
 
-        return new ResponseEntity<>("Game Not Started", HttpStatus.OK);
+        return new ResponseEntity<>(false, HttpStatus.OK);
     }
 
     @GetMapping("/{roomCode}/get-question")
@@ -144,12 +153,19 @@ public class GameController {
         return new ResponseEntity<>(room.getGame().getJudge(), HttpStatus.OK);
     }
 
-    @GetMapping("/{roomCode}/cards")
+    @GetMapping("/{roomCode}/show-cards")
     public ResponseEntity<?> getSubmitedCards(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
         if(room.getGame().getDisplayedCards().size() == room.getPlayerList().size()) return new ResponseEntity<>(room.getGame().getDisplayedCards().keySet(), HttpStatus.OK);
         else if(room.getGame().getDisplayedCards().size() < room.getPlayerList().size()) return new ResponseEntity<>("Not all cards are in", HttpStatus.FORBIDDEN);
         return new ResponseEntity<>("Too many cards", HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/{roomCode}/cards")
+    public ResponseEntity<?> getCards(@PathVariable String roomCode){
+        Room room = rooms.get(roomCode);
+        if(room.getGame().getDisplayedCards().size() == room.getPlayerList().size()) return new ResponseEntity<>(true, HttpStatus.OK);
+        else return new ResponseEntity<>(false, HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/{roomCode}/judge-pick")
