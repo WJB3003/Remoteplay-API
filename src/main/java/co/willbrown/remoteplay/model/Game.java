@@ -7,10 +7,12 @@ public class Game {
 
     private int numberOfRounds = 3;
     private Player judge;
+    private Player winner = null;
     private List<Player> players;
     private HashMap<Player, Integer> score = new HashMap<>();
     private int numberOfPlayers;
     private HashMap<Card, Player> displayedCards = new HashMap<>();
+    private Card question;
     private Deck questions = new Deck();
     private Deck answers = new Deck(
             new Card("1", CardType.ANSWER),
@@ -72,10 +74,26 @@ public class Game {
         answers.suffle();
     }
 
+    public Player getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Player winner) {
+        this.winner = winner;
+    }
+
     private void addPlayersToScore(List<Player> players) {
         for(Player player : players){
             this.getScore().put(player, 0);
         }
+    }
+
+    public Card getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(Card question) {
+        this.question = question;
     }
 
     public int getNumberOfRounds() {
@@ -199,8 +217,6 @@ public class Game {
         );
     }
 
-
-
     public void dealFirstHand(){
         for(Player player: players){
             for(int i = 0; i <= 7; i++){
@@ -211,8 +227,7 @@ public class Game {
 
     public Card drawQuestion(){
         Card topQuestion = questions.getCardStack().pop();
-
-        displayedCards.put(topQuestion, null);
+        this.question = topQuestion;
 
         return topQuestion;
     }

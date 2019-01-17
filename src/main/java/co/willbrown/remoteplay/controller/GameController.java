@@ -98,14 +98,23 @@ public class GameController {
 
     //DECK CONTROLLER
     @GetMapping("/{roomCode}/get-question")
-    public ResponseEntity<?> getQuestion(@PathVariable String roomCode){
+    public ResponseEntity<?> popQuestion(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
-        Card question = room.getGame().drawQuestion();
 
         if(room.getGame().equals(null)) return new ResponseEntity<>("Game hasn't started yet", HttpStatus.FORBIDDEN);
 
-        room.getGame().getDisplayedCards().put(question, null);
-        return new ResponseEntity<>(question, HttpStatus.OK);
+        room.getGame().drawQuestion();
+
+        return new ResponseEntity<>(room.getGame().getQuestion(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{roomCode}/question")
+    public ResponseEntity<?> getQuestion(@PathVariable String roomCode){
+        Room room = rooms.get(roomCode);
+
+        if(room.getGame().equals(null)) return new ResponseEntity<>("Game hasn't started yet", HttpStatus.FORBIDDEN);
+
+        return new ResponseEntity<>(room.getGame().getQuestion(), HttpStatus.OK);
     }
 
     //GAME CONTROLLER
@@ -123,6 +132,28 @@ public class GameController {
 
             room.getGame().getDisplayedCards().put(card, player);
             player.setSubmitCard(card);
+            return new ResponseEntity<>("Card Submitted", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Judge Cannot Submit a Card", HttpStatus.FORBIDDEN);
+    }
+
+    @PostMapping("/{roomCode}/{name}/submit-card/{card}")
+    public ResponseEntity<?> submitCard(@PathVariable String roomCode, @PathVariable String card, @PathVariable String name){
+        Room room = rooms.get(roomCode);
+        Player player = room.findByName(name);
+        Card cardToSubmit = new Card("", CardType.ANSWER);
+
+        if(!room.isJudge(player)) {
+            for (int i = 0; i < player.getHand().getMyhand().size(); i++) {
+                if (card.equals(player.getHand().getMyhand().get(i).getContent())) {
+                    cardToSubmit = player.getHand().getMyhand().get(i);
+                    player.getHand().getMyhand().remove(cardToSubmit);
+                    player.getHand().getMyhand().add(room.getGame().drawAnswer());
+                }
+            }
+
+            room.getGame().getDisplayedCards().put(cardToSubmit, player);
+            player.setSubmitCard(cardToSubmit);
             return new ResponseEntity<>("Card Submitted", HttpStatus.OK);
         }
         return new ResponseEntity<>("Judge Cannot Submit a Card", HttpStatus.FORBIDDEN);
@@ -166,8 +197,8 @@ public class GameController {
     @GetMapping("/{roomCode}/show-cards")
     public ResponseEntity<?> getSubmitedCards(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
-        if(room.getGame().getDisplayedCards().size() == room.getPlayerList().size()) return new ResponseEntity<>(room.getGame().getDisplayedCards().keySet(), HttpStatus.OK);
-        else if(room.getGame().getDisplayedCards().size() < room.getPlayerList().size()) return new ResponseEntity<>("Not all cards are in", HttpStatus.FORBIDDEN);
+        if((room.getGame().getDisplayedCards().size() + 1) == room.getPlayerList().size()) return new ResponseEntity<>(room.getGame().getDisplayedCards().keySet(), HttpStatus.OK);
+        else if((room.getGame().getDisplayedCards().size() + 1) < room.getPlayerList().size()) return new ResponseEntity<>("Not all cards are in", HttpStatus.FORBIDDEN);
         return new ResponseEntity<>("Too many cards", HttpStatus.FORBIDDEN);
     }
 
@@ -175,18 +206,34 @@ public class GameController {
     @GetMapping("/{roomCode}/cards")
     public ResponseEntity<?> getCards(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
-        if(room.getGame().getDisplayedCards().size() == room.getPlayerList().size()) return new ResponseEntity<>(true, HttpStatus.OK);
+        if((room.getGame().getDisplayedCards().size() + 1) == room.getPlayerList().size()) return new ResponseEntity<>(true, HttpStatus.OK);
         else return new ResponseEntity<>(false, HttpStatus.OK);
     }
 
     //GAME CONTROLLER
-    @PostMapping("/{roomCode}/judge-pick")
-    public ResponseEntity<?> judgesPick(@PathVariable String roomCode, @RequestBody Card card){
+    @PostMapping("/{roomCode}/judge-pick/{card}")
+    public ResponseEntity<?> judgesPick(@PathVariable String roomCode, @PathVariable String card){
         Room room = rooms.get(roomCode);
 
-//        int org = room.getGame().getScore().get(player);
-//        room.getGame().getScore().put(player, org + 1);
+        for(int i = 0 ; i < room.getPlayerList().size(); i++){
+            Player player = room.getPlayerList().get(i);
+            List<Card> hand = room.getPlayerList().get(i).getHand().getMyhand();
+            for(int j = 0; j < hand.size(); j++){
+                if(hand.get(j).getContent().equals(card)){
+                    int org = room.getGame().getScore().get(player);
+                    room.getGame().getScore().put(player, org + 1);
+                    room.getGame().setWinner(player);
+                    return new ResponseEntity<>(player, HttpStatus.OK);
+                }
+            }
+        }
 
-        return new ResponseEntity<>(card, HttpStatus.OK);
+        return new ResponseEntity<>("Something went really wrong", HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/{roomCode}/winner")
+    public ResponseEntity<?> getWinner(@PathVariable String roomCode){
+        Room room = rooms.get(roomCode);
+        return new ResponseEntity<>(room.getGame().getWinner(), HttpStatus.OK);
     }
 }
