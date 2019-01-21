@@ -154,7 +154,7 @@ public class GameController {
 
             room.getGame().getDisplayedCards().put(cardToSubmit, player);
             player.setSubmitCard(cardToSubmit);
-            return new ResponseEntity<>("Card Submitted", HttpStatus.OK);
+            return new ResponseEntity<>(player.getSubmitCard(), HttpStatus.OK);
         }
         return new ResponseEntity<>("Judge Cannot Submit a Card", HttpStatus.FORBIDDEN);
     }
@@ -186,8 +186,8 @@ public class GameController {
             player.setSubmitCard(null);
         }
 
+        room.getGame().setWinner(null);
         room.getGame().setDisplayedCards(null);
-
         room.getGame().nextJudge();
 
         return new ResponseEntity<>(room.getGame().getJudge(), HttpStatus.OK);
@@ -214,21 +214,18 @@ public class GameController {
     @PostMapping("/{roomCode}/judge-pick/{card}")
     public ResponseEntity<?> judgesPick(@PathVariable String roomCode, @PathVariable String card){
         Room room = rooms.get(roomCode);
+        List<Player> players= room.getGame().getPlayers();
+        Card pickedCard = new Card(card, CardType.ANSWER);
 
-        for(int i = 0 ; i < room.getPlayerList().size(); i++){
-            Player player = room.getPlayerList().get(i);
-            List<Card> hand = room.getPlayerList().get(i).getHand().getMyhand();
-            for(int j = 0; j < hand.size(); j++){
-                if(hand.get(j).getContent().equals(card)){
-                    int org = room.getGame().getScore().get(player);
-                    room.getGame().getScore().put(player, org + 1);
-                    room.getGame().setWinner(player);
-                    return new ResponseEntity<>(player, HttpStatus.OK);
+        for(Player i : players){
+            if(!room.getGame().getJudge().equals(i)) {
+                if (i.getSubmitCard().getContent().equals(pickedCard.getContent())){
+                    room.getGame().setWinner(i);
+                    return new ResponseEntity<>(i, HttpStatus.OK);
                 }
             }
         }
-
-        return new ResponseEntity<>("Something went really wrong", HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(-1, HttpStatus.OK);
     }
 
     @GetMapping("/{roomCode}/winner")
