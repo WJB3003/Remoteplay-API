@@ -141,9 +141,10 @@ public class GameController {
     public ResponseEntity<?> submitCard(@PathVariable String roomCode, @PathVariable String card, @PathVariable String name){
         Room room = rooms.get(roomCode);
         Player player = room.findByName(name);
-        Card cardToSubmit = new Card("", CardType.ANSWER);
 
         if(!room.isJudge(player)) {
+            Card cardToSubmit = new Card("", CardType.ANSWER);
+
             for (int i = 0; i < player.getHand().getMyhand().size(); i++) {
                 if (card.equals(player.getHand().getMyhand().get(i).getContent())) {
                     cardToSubmit = player.getHand().getMyhand().get(i);
@@ -152,9 +153,11 @@ public class GameController {
                 }
             }
 
-            room.getGame().getDisplayedCards().put(cardToSubmit, player);
-            player.setSubmitCard(cardToSubmit);
-            return new ResponseEntity<>(player.getSubmitCard(), HttpStatus.OK);
+            if(!cardToSubmit.equals(new Card("", CardType.ANSWER))) {
+                room.getGame().getDisplayedCards().put(cardToSubmit, player);
+                player.setSubmitCard(cardToSubmit);
+                return new ResponseEntity<>(player.getSubmitCard(), HttpStatus.OK);
+            }
         }
         return new ResponseEntity<>("Judge Cannot Submit a Card", HttpStatus.FORBIDDEN);
     }
@@ -189,6 +192,7 @@ public class GameController {
         room.getGame().setWinner(null);
         room.getGame().setDisplayedCards(null);
         room.getGame().nextJudge();
+        room.getGame().setRound(true);
 
         return new ResponseEntity<>(room.getGame().getJudge(), HttpStatus.OK);
     }
@@ -221,6 +225,7 @@ public class GameController {
             if(!room.getGame().getJudge().equals(i)) {
                 if (i.getSubmitCard().getContent().equals(pickedCard.getContent())){
                     room.getGame().setWinner(i);
+                    room.getGame().setRound(false);
                     return new ResponseEntity<>(i, HttpStatus.OK);
                 }
             }
@@ -232,5 +237,11 @@ public class GameController {
     public ResponseEntity<?> getWinner(@PathVariable String roomCode){
         Room room = rooms.get(roomCode);
         return new ResponseEntity<>(room.getGame().getWinner(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{roomCode}/round")
+    public ResponseEntity<?> getRound(@PathVariable String roomCode){
+        Room room = rooms.get(roomCode);
+        return new ResponseEntity<>(room.getGame().getRound(), HttpStatus.OK);
     }
 }

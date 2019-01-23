@@ -6,6 +6,7 @@ import java.util.List;
 public class Game {
 
     private int numberOfRounds = 3;
+    private boolean round = false;
     private Player judge;
     private Player winner = null;
     private List<Player> players;
@@ -54,7 +55,47 @@ public class Game {
             new Card("37", CardType.ANSWER),
             new Card("38", CardType.ANSWER),
             new Card("39", CardType.ANSWER),
-            new Card("40", CardType.ANSWER)
+            new Card("40", CardType.ANSWER),
+            new Card("41", CardType.ANSWER),
+            new Card("42", CardType.ANSWER),
+            new Card("43", CardType.ANSWER),
+            new Card("44", CardType.ANSWER),
+            new Card("45", CardType.ANSWER),
+            new Card("46", CardType.ANSWER),
+            new Card("47", CardType.ANSWER),
+            new Card("48", CardType.ANSWER),
+            new Card("49", CardType.ANSWER),
+            new Card("50", CardType.ANSWER),
+            new Card("51", CardType.ANSWER),
+            new Card("52", CardType.ANSWER),
+            new Card("53", CardType.ANSWER),
+            new Card("54", CardType.ANSWER),
+            new Card("55", CardType.ANSWER),
+            new Card("56", CardType.ANSWER),
+            new Card("57", CardType.ANSWER),
+            new Card("58", CardType.ANSWER),
+            new Card("59", CardType.ANSWER),
+            new Card("60", CardType.ANSWER),
+            new Card("61", CardType.ANSWER),
+            new Card("62", CardType.ANSWER),
+            new Card("63", CardType.ANSWER),
+            new Card("64", CardType.ANSWER),
+            new Card("65", CardType.ANSWER),
+            new Card("66", CardType.ANSWER),
+            new Card("67", CardType.ANSWER),
+            new Card("68", CardType.ANSWER),
+            new Card("69", CardType.ANSWER),
+            new Card("70", CardType.ANSWER),
+            new Card("71", CardType.ANSWER),
+            new Card("72", CardType.ANSWER),
+            new Card("73", CardType.ANSWER),
+            new Card("74", CardType.ANSWER),
+            new Card("75", CardType.ANSWER),
+            new Card("76", CardType.ANSWER),
+            new Card("77", CardType.ANSWER),
+            new Card("78", CardType.ANSWER),
+            new Card("79", CardType.ANSWER),
+            new Card("80", CardType.ANSWER)
     );
 
     public Game() {
@@ -72,6 +113,14 @@ public class Game {
         createQuestionDeck();
         questions.suffle();
         answers.suffle();
+    }
+
+    public boolean getRound() {
+        return round;
+    }
+
+    public void setRound(boolean round) {
+        this.round = round;
     }
 
     public Player getWinner() {
