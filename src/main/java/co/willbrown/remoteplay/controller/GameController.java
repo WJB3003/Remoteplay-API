@@ -244,4 +244,10 @@ public class GameController {
         Room room = rooms.get(roomCode);
         return new ResponseEntity<>(room.getGame().getRound(), HttpStatus.OK);
     }
+
+    @GetMapping("/{roomCode}/score")
+    public ResponseEntity<?> getScore(@PathVariable String roomCode){
+        Room room = rooms.get(roomCode);
+        return new ResponseEntity<>(room.getGame().getScore(), HttpStatus.OK);
+    }
 }
