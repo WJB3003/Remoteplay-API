@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@CrossOrigin(origins = "https://friendly-benz-57e2cb.netlify.com/")
+@CrossOrigin(origins = "*")
 @RestController
 public class GameController {
 
