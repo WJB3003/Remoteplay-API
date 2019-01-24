@@ -190,7 +190,7 @@ public class GameController {
         }
 
         room.getGame().setWinner(null);
-        room.getGame().setDisplayedCards(null);
+        room.getGame().setDisplayedCards(new HashMap<Card, Player>());
         room.getGame().nextJudge();
         room.getGame().setRound(true);
 
