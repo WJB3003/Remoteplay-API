@@ -15,7 +15,6 @@ public class Game {
     private HashMap<Card, Player> displayedCards = new HashMap<>();
     private Card question;
     private Deck questions = new Deck(
-            new Card("", CardType.QUESTION),
             new Card("How did I lose my virginity?", CardType.QUESTION),
             new Card("Why can't I sleep at night?", CardType.QUESTION),
             new Card("What's that smell?", CardType.QUESTION),
